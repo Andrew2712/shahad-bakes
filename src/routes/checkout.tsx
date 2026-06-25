@@ -2,12 +2,12 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { Shell } from "@/components/site/Shell";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
-import { createOrder, createInvoice, generateInvoiceNumber, type OrderItem } from "@/lib/firebase/db";
+import { createOrder, createInvoice, generateInvoiceNumber, type OrderItem } from "@/lib/supabase/db";
 import { generateInvoicePDF, downloadPDF } from "@/lib/invoice";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Loader2, CheckCircle2, ArrowLeft, ShoppingBag } from "lucide-react";
-import { Timestamp } from "firebase/firestore";
+
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({ meta: [{ title: "Checkout — Shahad Bakes" }] }),
@@ -96,7 +96,7 @@ function CheckoutPage() {
 
       // 1. Create order
       const oid = await createOrder({
-        userId: user.uid,
+        userId: user.id,
         customerName: form.name,
         customerEmail: form.email,
         customerPhone: form.phone,
@@ -118,7 +118,7 @@ function CheckoutPage() {
       const invData = {
         invoiceNumber: invNumber,
         orderId: oid,
-        userId: user.uid,
+        userId: user.id,
         customerName: form.name,
         customerEmail: form.email,
         customerPhone: form.phone,
@@ -129,7 +129,7 @@ function CheckoutPage() {
         deliveryCharge,
         discount: 0,
         total,
-        createdAt: Timestamp.now(),
+        createdAt: { toDate: () => new Date() },
       };
       const invId = await createInvoice(invData);
 

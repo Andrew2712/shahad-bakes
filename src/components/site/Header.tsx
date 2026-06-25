@@ -3,7 +3,7 @@ import { Menu, X, ShoppingBag, User, LogOut, LayoutDashboard, Package, ChevronDo
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
-import { signOut } from "@/lib/firebase/auth";
+import { signOut } from "@/lib/supabase/auth";
 import { toast } from "sonner";
 
 const nav = [

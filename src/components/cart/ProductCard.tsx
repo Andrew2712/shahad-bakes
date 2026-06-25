@@ -1,4 +1,4 @@
-import type { Product } from "@/lib/firebase/db";
+import type { Product } from "@/lib/supabase/db";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { categories } from "@/lib/products";
 

@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { Shell } from "@/components/site/Shell";
 import { useAuth } from "@/contexts/AuthContext";
-import { updateUserProfile } from "@/lib/firebase/db";
+import { updateUserProfile } from "@/lib/supabase/db";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { User, Mail, Phone, MapPin, Save, Loader2, Package, ShieldCheck } from "lucide-react";
@@ -38,7 +38,7 @@ function ProfilePage() {
     if (!user) return;
     setSaving(true);
     try {
-      await updateUserProfile(user.uid, form);
+      await updateUserProfile(user.id, form);
       await refreshProfile();
       toast.success("Profile updated!");
     } catch {

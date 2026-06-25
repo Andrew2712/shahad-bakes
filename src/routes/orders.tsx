@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Shell } from "@/components/site/Shell";
 import { useAuth } from "@/contexts/AuthContext";
-import { getUserOrders, getInvoice, type Order } from "@/lib/firebase/db";
+import { getUserOrders, getInvoice, type Order } from "@/lib/supabase/db";
 import { generateInvoicePDF, downloadPDF } from "@/lib/invoice";
 import { useEffect, useState } from "react";
 import { Loader2, Package, Download, ChevronDown, ChevronUp } from "lucide-react";
@@ -44,7 +44,7 @@ function OrdersPage() {
 
   useEffect(() => {
     if (!user) return;
-    getUserOrders(user.uid).then((o) => { setOrders(o); setFetching(false); });
+    getUserOrders(user.id).then((o) => { setOrders(o); setFetching(false); });
   }, [user]);
 
   async function handleDownloadInvoice(order: Order) {

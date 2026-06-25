@@ -1,4 +1,4 @@
-import type { Order, Invoice } from "@/lib/firebase/db";
+import type { Order, Invoice } from "@/lib/supabase/db";
 
 // Dynamically import jsPDF to keep bundle size low
 async function loadJsPDF() {

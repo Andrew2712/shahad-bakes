@@ -5,9 +5,9 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { User } from "firebase/auth";
-import { onAuthChange } from "@/lib/firebase/auth";
-import { getUserProfile, type UserProfile } from "@/lib/firebase/db";
+import type { User } from "@supabase/supabase-js";
+import { onAuthChange } from "@/lib/supabase/auth";
+import { getUserProfile, createUserProfile, type UserProfile } from "@/lib/supabase/db";
 
 interface AuthContextValue {
   user: User | null;
@@ -30,20 +30,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  async function fetchProfile(uid: string) {
-    const p = await getUserProfile(uid);
+  async function fetchProfile(u: User) {
+    // Ensure profile row exists
+    await createUserProfile(u.id, {
+      uid: u.id,
+      name: u.user_metadata?.full_name ?? u.user_metadata?.name ?? "",
+      email: u.email ?? "",
+      photoURL: u.user_metadata?.avatar_url ?? "",
+    });
+    const p = await getUserProfile(u.id);
     setProfile(p);
   }
 
   async function refreshProfile() {
-    if (user) await fetchProfile(user.uid);
+    if (user) await fetchProfile(user);
   }
 
   useEffect(() => {
     const unsub = onAuthChange(async (u) => {
       setUser(u);
       if (u) {
-        await fetchProfile(u.uid);
+        await fetchProfile(u);
       } else {
         setProfile(null);
       }

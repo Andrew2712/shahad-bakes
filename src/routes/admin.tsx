@@ -6,9 +6,9 @@ import {
   updateOrderStatus, addProduct, updateProduct, deleteProduct,
   type Order, type UserProfile, type Product, type Invoice,
   type OrderStatus,
-} from "@/lib/firebase/db";
+} from "@/lib/supabase/db";
 import { generateInvoicePDF, downloadPDF } from "@/lib/invoice";
-import { getInvoice } from "@/lib/firebase/db";
+import { getInvoice } from "@/lib/supabase/db";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -334,7 +334,7 @@ function ProductsTab({ products, onDelete, onRefresh }: {
         await updateProduct(editProduct.id, form);
         toast.success("Product updated");
       } else {
-        await addProduct({ ...form, createdAt: undefined as any, updatedAt: undefined as any });
+        await addProduct({ name: form.name, category: form.category, description: form.description, ingredients: form.ingredients, price: form.price, discountPrice: form.discountPrice, imageUrl: form.imageUrl, available: form.available, tags: form.tags, featured: form.featured });
         toast.success("Product added");
       }
       await onRefresh();

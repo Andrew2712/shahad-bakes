@@ -4,9 +4,10 @@ import {
   useEffect,
   useState,
   useCallback,
+  useRef,
   type ReactNode,
 } from "react";
-import { type CartItem, getCart, saveCart, clearCart } from "@/lib/firebase/db";
+import { type CartItem, getCart, saveCart, clearCart } from "@/lib/supabase/db";
 import { useAuth } from "./AuthContext";
 
 const TAX_RATE = 0.05;
@@ -35,28 +36,46 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const syncTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Load cart from Firestore when user logs in
+  // Load cart on auth change
   useEffect(() => {
     if (user) {
-      getCart(user.uid).then((cart) => {
-        if (cart?.items) setItems(cart.items);
-      });
+      getCart(user.id)
+        .then((cart) => {
+          if (cart?.items && cart.items.length > 0) {
+            setItems(cart.items);
+          } else {
+            // Migrate guest cart to user cart on login
+            const stored = sessionStorage.getItem("shahad_cart");
+            if (stored) {
+              const guestItems = JSON.parse(stored) as CartItem[];
+              setItems(guestItems);
+              sessionStorage.removeItem("shahad_cart");
+            }
+          }
+        })
+        .catch(console.error);
     } else {
-      // Guest cart from sessionStorage
       const stored = sessionStorage.getItem("shahad_cart");
-      if (stored) setItems(JSON.parse(stored));
+      if (stored) {
+        try { setItems(JSON.parse(stored)); } catch { setItems([]); }
+      }
     }
-  }, [user]);
+  }, [user?.id]);
 
-  // Persist cart
+  // Debounced persist — don't hammer DB on every keystroke
   useEffect(() => {
-    if (user) {
-      saveCart(user.uid, items);
-    } else {
-      sessionStorage.setItem("shahad_cart", JSON.stringify(items));
-    }
-  }, [items, user]);
+    if (syncTimeout.current) clearTimeout(syncTimeout.current);
+    syncTimeout.current = setTimeout(() => {
+      if (user) {
+        saveCart(user.id, items).catch(console.error);
+      } else {
+        sessionStorage.setItem("shahad_cart", JSON.stringify(items));
+      }
+    }, 600);
+    return () => { if (syncTimeout.current) clearTimeout(syncTimeout.current); };
+  }, [items, user?.id]);
 
   const addItem = useCallback(
     (newItem: Omit<CartItem, "quantity"> & { quantity?: number }) => {
@@ -92,9 +111,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clearAll = useCallback(async () => {
     setItems([]);
-    if (user) await clearCart(user.uid);
+    if (user) await clearCart(user.id).catch(console.error);
     else sessionStorage.removeItem("shahad_cart");
-  }, [user]);
+  }, [user?.id]);
 
   const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0);
   const tax = Math.round(subtotal * TAX_RATE);

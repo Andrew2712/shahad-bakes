@@ -1,7 +1,7 @@
 import { ShoppingBag, Check } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
-import type { Product } from "@/lib/firebase/db";
+import type { Product } from "@/lib/supabase/db";
 
 interface AddToCartButtonProps {
   product: Product;
