@@ -2,17 +2,31 @@ import { Link } from "@tanstack/react-router";
 import { ShahadLogo } from "./ShahadLogo";
 import { Instagram, Mail, MessageCircle, MapPin } from "lucide-react";
 import { WHATSAPP } from "@/lib/products";
+import logo from "@/assets/Logo.png";
 
 export function Footer() {
   return (
     <footer className="mt-24 bg-secondary text-secondary-foreground">
       <div className="container-x py-16 grid gap-12 md:grid-cols-4">
-        <div className="md:col-span-1">
-          <ShahadLogo variant="horizontal" size={36} />
-          <p className="mt-3 text-sm text-secondary-foreground/75 leading-relaxed">
-            Healthy sweetness without guilt. Freshly baked every day, with no sugar, no flour and no refined oil.
-          </p>
-        </div>
+        {/* Logo */}
+        <Link to="/" className="flex items-center gap-3 shrink-0">
+          <img
+            src={logo}
+            alt="Shahad Logo"
+            className="h-12 w-12 md:h-14 md:w-14"
+          />
+        
+          <div>
+            <h1 className="text-3xl font-serif font-bold text-text-white leading-none">
+              SHAHAD
+            </h1>
+        
+            <p className="text-xs uppercase tracking-[0.25em] text-[#C88A2B] leading-none mt-1">
+              Baked With Love
+            </p>
+          </div>
+        </Link>
+        
         <div>
           <div className="text-xs uppercase tracking-widest text-primary/90 mb-4" style={{ fontFamily: "var(--font-button)" }}>Explore</div>
           <ul className="space-y-2 text-sm text-secondary-foreground/80">
