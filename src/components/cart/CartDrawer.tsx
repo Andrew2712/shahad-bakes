@@ -4,7 +4,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 
 // ── Update this to the real WhatsApp business number ──────────
-const WHATSAPP_NUMBER = "916363357287"; // Format: country code + number, no +
+const WHATSAPP_NUMBER = "918951244486"; // Format: country code + number, no +
 
 type Step = "cart" | "details";
 type DeliveryType = "pickup" | "delivery";
@@ -205,7 +205,7 @@ _Please confirm this order. Thank you!_ 🙏
 
                 <button
                   onClick={handleOpenDetails}
-                  className="w-full flex items-center justify-center gap-2 rounded-full bg-[#25D366] py-3.5 text-sm font-medium text-white hover:bg-[#1ebe5d] transition"
+                  className="w-full flex items-center justify-center gap-2 rounded-full bg-primary py-3.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition"
                   style={{ fontFamily: "var(--font-button)" }}
                 >
                   <MessageCircle className="h-4 w-4" />
@@ -345,7 +345,7 @@ _Please confirm this order. Thank you!_ 🙏
               </p>
               <button
                 onClick={handleSendWhatsApp}
-                className="w-full flex items-center justify-center gap-2 rounded-full bg-[#25D366] py-4 text-sm font-semibold text-white hover:bg-[#1ebe5d] transition shadow-lg shadow-[#25D366]/30"
+                className="w-full flex items-center justify-center gap-2 rounded-full bg-primary py-4 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition shadow-lg shadow-primary/20"
                 style={{ fontFamily: "var(--font-button)" }}
               >
                 <MessageCircle className="h-5 w-5" />
