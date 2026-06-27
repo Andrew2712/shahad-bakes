@@ -1,144 +1,171 @@
 interface LogoProps {
   variant?: "full" | "icon" | "horizontal";
   className?: string;
-  /** px size for icon variant */
   size?: number;
 }
 
 /**
- * Shahad Bakes logo — three variants:
- *  - "full"       : orange badge with SHAHAD + tagline (matches PDF)
- *  - "icon"       : just the circular orange badge with bee
- *  - "horizontal" : icon + wordmark side by side (for navbar)
+ * Shahad Bakes logo — matches the official brand mark:
+ *  - Orange hexagon with honey drip smiley face
+ *  - "SHAHAD" bold text below
+ *  - "SWEETNESS OF PURITY AND HEALTH" tagline
+ *
+ *  variant="icon"       → hexagon icon only
+ *  variant="full"       → icon + SHAHAD + tagline stacked
+ *  variant="horizontal" → icon + wordmark side by side (navbar)
  */
 export function ShahadLogo({ variant = "horizontal", className = "", size = 40 }: LogoProps) {
+  const ORANGE = "#F5A623";
+  const DARK_ORANGE = "#E8920A";
+
+  // Hexagon path centered at 50,50 with radius 46
+  const hex = (cx: number, cy: number, r: number) => {
+    const pts = Array.from({ length: 6 }, (_, i) => {
+      const angle = (Math.PI / 180) * (60 * i - 30);
+      return `${cx + r * Math.cos(angle)},${cy + r * Math.sin(angle)}`;
+    });
+    return `M ${pts.join(" L ")} Z`;
+  };
+
+  // The core hexagon + face illustration
+  const HexIcon = ({ w = 100, h = 100 }: { w?: number; h?: number }) => (
+    <svg
+      width={w}
+      height={h}
+      viewBox="0 0 100 115"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {/* Hexagon body */}
+      <path d={hex(50, 52, 44)} fill={ORANGE} />
+
+      {/* Honey drip from top — left drop */}
+      <path
+        d="M35 10 Q33 18 36 24 Q39 18 37 10 Z"
+        fill={ORANGE}
+      />
+      {/* Honey drip — right drop (taller) */}
+      <path
+        d="M54 6 Q52 17 55 25 Q58 17 56 6 Z"
+        fill={ORANGE}
+      />
+      {/* Connecting drip bar */}
+      <rect x="33" y="8" width="24" height="5" rx="2.5" fill={ORANGE} />
+
+      {/* Face — left eye */}
+      <ellipse cx="38" cy="48" rx="4.5" ry="5" fill="white" />
+      <ellipse cx="39" cy="49" rx="2.5" ry="3" fill="#333" />
+      <ellipse cx="40" cy="48" rx="1" ry="1" fill="white" />
+
+      {/* Face — right eye */}
+      <ellipse cx="62" cy="48" rx="4.5" ry="5" fill="white" />
+      <ellipse cx="63" cy="49" rx="2.5" ry="3" fill="#333" />
+      <ellipse cx="64" cy="48" rx="1" ry="1" fill="white" />
+
+      {/* Smile */}
+      <path
+        d="M40 60 Q50 68 60 60"
+        stroke="white"
+        strokeWidth="3"
+        strokeLinecap="round"
+        fill="none"
+      />
+
+      {/* Honey drip from bottom of face */}
+      <path
+        d="M49 67 Q47 74 50 78 Q53 74 51 67 Z"
+        fill={DARK_ORANGE}
+        opacity="0.7"
+      />
+
+      {/* Cheek blush left */}
+      <ellipse cx="32" cy="57" rx="5" ry="3" fill={DARK_ORANGE} opacity="0.4" />
+      {/* Cheek blush right */}
+      <ellipse cx="68" cy="57" rx="5" ry="3" fill={DARK_ORANGE} opacity="0.4" />
+
+      {/* Small sparkle top right of hexagon */}
+      <g transform="translate(82,22)">
+        <line x1="0" y1="-5" x2="0" y2="5" stroke={ORANGE} strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="-5" y1="0" x2="5" y2="0" stroke={ORANGE} strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="-3.5" y1="-3.5" x2="3.5" y2="3.5" stroke={ORANGE} strokeWidth="1" strokeLinecap="round" />
+        <line x1="3.5" y1="-3.5" x2="-3.5" y2="3.5" stroke={ORANGE} strokeWidth="1" strokeLinecap="round" />
+      </g>
+    </svg>
+  );
+
+  // ── icon only ──────────────────────────────────────────────
   if (variant === "icon") {
     return (
-      <svg
-        width={size}
-        height={size}
-        viewBox="0 0 100 100"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className={className}
-        aria-label="Shahad Bakes"
-      >
-        <rect width="100" height="100" rx="50" fill="#E8600A" />
-        {/* Honey bee simplified */}
-        <ellipse cx="50" cy="54" rx="16" ry="11" fill="#FFF8E7" />
-        <ellipse cx="50" cy="54" rx="16" ry="11" fill="none" stroke="#E8600A" strokeWidth="1.5" />
-        {/* Stripes */}
-        <rect x="38" y="50" width="24" height="4" rx="2" fill="#E8600A" opacity="0.5" />
-        <rect x="38" y="56" width="24" height="4" rx="2" fill="#E8600A" opacity="0.5" />
-        {/* Wings */}
-        <ellipse cx="36" cy="47" rx="9" ry="5" fill="white" opacity="0.85" transform="rotate(-20 36 47)" />
-        <ellipse cx="64" cy="47" rx="9" ry="5" fill="white" opacity="0.85" transform="rotate(20 64 47)" />
-        {/* Head */}
-        <circle cx="50" cy="43" r="5" fill="#FFF8E7" />
-        {/* Antennae */}
-        <line x1="47" y1="39" x2="43" y2="33" stroke="#FFF8E7" strokeWidth="1.5" strokeLinecap="round" />
-        <circle cx="43" cy="32" r="2" fill="#FFF8E7" />
-        <line x1="53" y1="39" x2="57" y2="33" stroke="#FFF8E7" strokeWidth="1.5" strokeLinecap="round" />
-        <circle cx="57" cy="32" r="2" fill="#FFF8E7" />
-        {/* S letter */}
-        <text x="50" y="82" textAnchor="middle" fontSize="14" fontWeight="800" fill="white" fontFamily="serif" letterSpacing="1">S</text>
-      </svg>
+      <div className={className} style={{ width: size, height: size }}>
+        <HexIcon w={size} h={size} />
+      </div>
     );
   }
 
+  // ── full stacked (login page, large display) ───────────────
   if (variant === "full") {
+    const scale = size / 40;
     return (
-      <svg
-        width="260"
-        height="120"
-        viewBox="0 0 260 120"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className={className}
-        aria-label="Shahad Bakes — Sweetness of Purity and Health"
-      >
-        {/* Background */}
-        <rect width="260" height="120" rx="12" fill="#E8600A" />
-
-        {/* Top decorative leaf elements */}
-        {[20, 50, 80, 110, 150, 180, 210, 240].map((x, i) => (
-          <ellipse key={i} cx={x} cy={6} rx="5" ry="8" fill="#C94E00" opacity="0.6" />
-        ))}
-
-        {/* ONE TASTE, MANY LANGUAGES */}
-        <text x="130" y="22" textAnchor="middle" fontSize="7.5" fill="white" fontFamily="sans-serif" fontWeight="600" letterSpacing="2">
-          ONE TASTE, MANY LANGUAGES.
-        </text>
-
-        {/* Bee icon */}
-        <g transform="translate(108, 38)">
-          <ellipse cx="22" cy="18" rx="14" ry="10" fill="#FFF8E7" />
-          <rect x="11" y="15" width="22" height="3.5" rx="1.5" fill="#E8600A" opacity="0.45" />
-          <rect x="11" y="20" width="22" height="3.5" rx="1.5" fill="#E8600A" opacity="0.45" />
-          <ellipse cx="10" cy="12" rx="8" ry="4" fill="white" opacity="0.8" transform="rotate(-20 10 12)" />
-          <ellipse cx="34" cy="12" rx="8" ry="4" fill="white" opacity="0.8" transform="rotate(20 34 12)" />
-          <circle cx="22" cy="9" r="5" fill="#FFF8E7" />
-          <line x1="19" y1="5" x2="15" y2="0" stroke="#FFF8E7" strokeWidth="1.2" strokeLinecap="round" />
-          <circle cx="14" cy="-1" r="1.5" fill="#FFF8E7" />
-          <line x1="25" y1="5" x2="29" y2="0" stroke="#FFF8E7" strokeWidth="1.2" strokeLinecap="round" />
-          <circle cx="30" cy="-1" r="1.5" fill="#FFF8E7" />
-        </g>
-
-        {/* SHAHAD */}
-        <text x="130" y="78" textAnchor="middle" fontSize="30" fill="white" fontFamily="serif" fontWeight="900" letterSpacing="6">
-          SHAHAD
-        </text>
-
-        {/* Tagline */}
-        <text x="130" y="92" textAnchor="middle" fontSize="7" fill="white" fontFamily="sans-serif" fontWeight="500" letterSpacing="2.5" opacity="0.9">
-          SWEETNESS OF PURITY AND HEALTH
-        </text>
-
-        {/* Bottom bar */}
-        <text x="20" y="112" fontSize="7" fill="white" fontFamily="monospace" fontWeight="500" opacity="0.8">shahad_bakes</text>
-        <line x1="100" y1="110" x2="215" y2="110" stroke="white" strokeWidth="0.8" opacity="0.5" />
-
-        {/* Social icons placeholder dots */}
-        <circle cx="222" cy="110" r="4" fill="white" opacity="0.7" />
-        <circle cx="234" cy="110" r="4" fill="white" opacity="0.7" />
-        <circle cx="246" cy="110" r="4" fill="white" opacity="0.7" />
-      </svg>
+      <div className={`flex flex-col items-center ${className}`}>
+        <HexIcon w={size * 2.4} h={size * 2.8} />
+        <div className="mt-1 text-center">
+          <div
+            style={{
+              color: ORANGE,
+              fontFamily: "Georgia, 'Times New Roman', serif",
+              fontWeight: 900,
+              fontSize: size * 1.1,
+              letterSpacing: "0.18em",
+              lineHeight: 1,
+            }}
+          >
+            SHAHAD
+          </div>
+          <div
+            style={{
+              color: ORANGE,
+              fontFamily: "Arial, sans-serif",
+              fontWeight: 600,
+              fontSize: size * 0.28,
+              letterSpacing: "0.12em",
+              marginTop: size * 0.1,
+            }}
+          >
+            SWEETNESS OF PURITY AND HEALTH
+          </div>
+        </div>
+      </div>
     );
   }
 
-  // horizontal — for navbar
+  // ── horizontal (navbar, footer) ────────────────────────────
   return (
-    <div className={`flex items-center gap-2.5 ${className}`} aria-label="Shahad Bakes">
-      {/* Orange badge */}
-      <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="100" height="100" rx="50" fill="#E8600A" />
-        {/* Bee */}
-        <ellipse cx="50" cy="55" rx="15" ry="10" fill="#FFF8E7" />
-        <rect x="38" y="51" width="24" height="3.5" rx="1.5" fill="#E8600A" opacity="0.45" />
-        <rect x="38" y="56" width="24" height="3.5" rx="1.5" fill="#E8600A" opacity="0.45" />
-        <ellipse cx="36" cy="47" rx="9" ry="4.5" fill="white" opacity="0.85" transform="rotate(-20 36 47)" />
-        <ellipse cx="64" cy="47" rx="9" ry="4.5" fill="white" opacity="0.85" transform="rotate(20 64 47)" />
-        <circle cx="50" cy="44" r="5" fill="#FFF8E7" />
-        <line x1="47" y1="40" x2="43" y2="33" stroke="#FFF8E7" strokeWidth="1.5" strokeLinecap="round" />
-        <circle cx="42" cy="32" r="2" fill="#FFF8E7" />
-        <line x1="53" y1="40" x2="57" y2="33" stroke="#FFF8E7" strokeWidth="1.5" strokeLinecap="round" />
-        <circle cx="58" cy="32" r="2" fill="#FFF8E7" />
-        {/* S wordmark inside badge */}
-        <text x="50" y="80" textAnchor="middle" fontSize="13" fontWeight="800" fill="white" fontFamily="Georgia, serif">S</text>
-      </svg>
-      {/* Wordmark */}
-      <div className="flex flex-col leading-none">
+    <div className={`flex items-center gap-2 ${className}`} aria-label="Shahad Bakes">
+      <HexIcon w={size * 1.15} h={size * 1.35} />
+      <div className="flex flex-col justify-center leading-none">
         <span
-          className="font-display font-bold tracking-widest text-secondary"
-          style={{ fontSize: size * 0.42, letterSpacing: "0.12em" }}
+          style={{
+            color: ORANGE,
+            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontWeight: 900,
+            fontSize: size * 0.52,
+            letterSpacing: "0.15em",
+            lineHeight: 1,
+          }}
         >
           SHAHAD
         </span>
         <span
-          className="text-primary font-medium tracking-wider uppercase"
-          style={{ fontSize: size * 0.18, letterSpacing: "0.15em", fontFamily: "var(--font-button)" }}
+          style={{
+            color: ORANGE,
+            fontFamily: "Arial, sans-serif",
+            fontWeight: 600,
+            fontSize: size * 0.2,
+            letterSpacing: "0.1em",
+            marginTop: 2,
+          }}
         >
-          Baked with Love
+          SWEETNESS OF PURITY AND HEALTH
         </span>
       </div>
     </div>

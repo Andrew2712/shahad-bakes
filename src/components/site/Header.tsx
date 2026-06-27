@@ -5,7 +5,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
 import { signOut } from "@/lib/supabase/auth";
 import { toast } from "sonner";
-import { ShahadLogo } from "./ShahadLogo";
+
+import logo from "@/assets/Logo.png";
 
 const nav = [
   { to: "/", label: "Home" },
@@ -34,10 +35,24 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
       <div className="container-x flex h-16 items-center justify-between gap-6 md:h-20">
-        {/* Logo */}
-        <Link to="/" className="shrink-0">
-          <ShahadLogo variant="horizontal" size={38} />
-        </Link>
+{/* Logo */}
+<Link to="/" className="flex items-center gap-3 shrink-0">
+  <img
+    src={logo}
+    alt="Shahad Logo"
+    className="h-12 w-12 md:h-14 md:w-14"
+  />
+
+  <div>
+    <h1 className="text-3xl font-serif font-bold text-[#5A3A22] leading-none">
+      SHAHAD
+    </h1>
+
+    <p className="text-xs uppercase tracking-[0.25em] text-[#C88A2B] leading-none mt-1">
+      Baked With Love
+    </p>
+  </div>
+</Link>
 
         {/* Desktop Nav */}
         <nav className="hidden lg:flex items-center gap-7 text-sm" style={{ fontFamily: "var(--font-button)" }}>
